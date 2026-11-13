@@ -1,5 +1,4 @@
 <script setup>
-// Tout ce que le parent doit fournir pour afficher UNE tâche.
 const props = defineProps({
   id: { type: Number, required: true },
   libelle: { type: String, required: true },
@@ -9,7 +8,7 @@ const props = defineProps({
   peutDescendre: { type: Boolean, required: true },
 })
 
-// Les quatre "sonnettes" que ce composant peut actionner.
+// Les quatre "sonnettes" que ce composant peut actionner
 const emit = defineEmits([
   'demanderSuppression',
   'demanderChangementStatut',
@@ -17,7 +16,6 @@ const emit = defineEmits([
   'demanderDescente',
 ])
 
-// Fonctions intermédiaires : chacune prévient le parent en donnant l'id.
 const demanderSuppression = () => emit('demanderSuppression', props.id)
 const demanderChangementStatut = () => emit('demanderChangementStatut', props.id)
 const demanderMontee = () => emit('demanderMontee', props.id)
@@ -26,7 +24,6 @@ const demanderDescente = () => emit('demanderDescente', props.id)
 
 <template>
   <li class="ligne">
-    <!-- :checked lit la prop, @change prévient le parent. Pas de v-model sur une prop. -->
     <input type="checkbox" :checked="props.terminee" @change="demanderChangementStatut" />
     <span :class="{ terminee: props.terminee }">{{ props.libelle }}</span>
     <button

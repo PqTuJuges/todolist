@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import TodoForm from './components/TodoForm.vue'
 import TodoList from './components/TodoList.vue'
 
-// ---------- Données réactives (le parent reste la source de vérité) ----------
+//  Données réactives
 const taches = ref([
   { id: 1, libelle: 'Apprendre les bases de Vue.js', terminee: false, ordre: 1 },
   { id: 2, libelle: "Faire l'exercice de synthèse", terminee: false, ordre: 2 },
@@ -11,8 +11,8 @@ const taches = ref([
 ])
 const triCritere = ref('manuel')
 const prochainId = ref(4)
+const afficherFormulaire = ref(true)
 
-// ---------- Propriétés calculées ----------
 const nombreTotalTaches = computed(() => {
   return taches.value.length
 })
@@ -47,11 +47,10 @@ const tachesTriees = computed(() => {
   }
 })
 
-// ---------- Clés localStorage ----------
+// Clés localStorage 
 const CLE_LOCALSTORAGE_TACHES = 'todolist:taches'
 const CLE_LOCALSTORAGE_PROCHAIN_ID = 'todolist:prochainId'
 
-// ---------- Initialisation : restauration depuis le navigateur ----------
 const tachesSauvegardees = localStorage.getItem(CLE_LOCALSTORAGE_TACHES)
 if (tachesSauvegardees !== null) {
   taches.value = JSON.parse(tachesSauvegardees)
@@ -61,10 +60,7 @@ const prochainIdSauvegarde = localStorage.getItem(CLE_LOCALSTORAGE_PROCHAIN_ID)
 if (prochainIdSauvegarde !== null) {
   prochainId.value = Number(prochainIdSauvegarde)
 }
-
-// ---------- Observateurs : sauvegarde automatique ----------
-// deep: true est indispensable : "taches" est une ref contenant un tableau,
-// et on veut réagir aux push() et aux modifications des tâches elles-mêmes.
+// observateur
 watch(
   taches,
   (nouvellesTaches) => {
@@ -77,7 +73,7 @@ watch(prochainId, (nouvelId) => {
   localStorage.setItem(CLE_LOCALSTORAGE_PROCHAIN_ID, String(nouvelId))
 })
 
-// ---------- Fonctions métier (appelées quand un enfant émet un événement) ----------
+// Fonctions
 function ajouterTache(libelle) {
   taches.value.push({
     id: prochainId.value,
@@ -129,8 +125,12 @@ function descendre(id) {
 <template>
   <h2>Exo Synthèse</h2>
 
-  <!-- Formulaire d'ajout : l'enfant émet "demanderAjoutTache" avec le libellé -->
-  <TodoForm @demander-ajout-tache="ajouterTache" />
+  <!-- Bouton pour masquer ou réafficher le formulaire -->
+  <button type="button" @click="afficherFormulaire = !afficherFormulaire">
+    {{ afficherFormulaire ? 'Masquer' : 'Afficher' }} le formulaire
+  </button>
+
+  <TodoForm v-if="afficherFormulaire" @demander-ajout-tache="ajouterTache" />
 
   <!-- Sélection du tri -->
   <div class="ligne">
@@ -163,7 +163,6 @@ function descendre(id) {
   <p v-else>Aucune tâche à afficher</p>
 </template>
 
-<!-- Style NON scoped : ces règles servent aussi aux composants enfants -->
 <style>
 .ligne {
   display: flex;

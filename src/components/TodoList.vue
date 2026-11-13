@@ -1,14 +1,11 @@
 <script setup>
 import TodoItem from './TodoItem.vue'
 
-// La liste arrive déjà triée depuis App.vue : aucun tri ici.
 const props = defineProps({
   taches: { type: Array, required: true },
   peutUtiliserTriManuel: { type: Boolean, required: true },
 })
 
-// Les événements ne remontent pas tout seuls de deux niveaux :
-// TodoList doit réémettre ceux qu'il reçoit de TodoItem.
 const emit = defineEmits([
   'demanderSuppression',
   'demanderChangementStatut',
